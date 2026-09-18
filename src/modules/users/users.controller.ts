@@ -18,11 +18,10 @@ export class UsersController {
         if (!user) throw new UnauthorizedException()
 
         return this.userService.findById(user.id);
-
     }
     @Get(":id")
     getUserById(@Param() id: string) {
-        return { name: id }
+        return this.userService.findById(id)
     }
 
     @Post()

@@ -1,7 +1,9 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { ConflictException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { PrismaService } from '../../database/prisma.service';
 import { Prisma } from '../../generated/prisma/client';
+import { AppException } from '../../common/exceptions/app.exception';
+import { ErrorCode } from '../../common/exceptions/error-codes';
 
 
 @Injectable()
@@ -14,8 +16,26 @@ export class UsersService {
         return users
     }
     async findById(id: string) {
-        const user = await this.prisma.user.findUnique({ where: { id } })
-        return { ...user, passwordHash: undefined }
+        const user = await this.prisma.user.findUnique({
+            where: { id },
+            select: {
+                id: true,
+                email: true,
+                name: true,
+                createdAt: true,
+                updatedAt: true,
+            },
+        });
+
+        if (!user) {
+            throw new AppException(
+                ErrorCode.USER_NOT_FOUND,
+                'User not found',
+                HttpStatus.NOT_FOUND,
+            );
+        }
+
+        return user;
     }
     async create(createUserDto: CreateUserDto) {
         try {
