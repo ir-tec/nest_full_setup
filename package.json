@@ -84,5 +84,11 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
+  },
+  "allowScripts": {
+    "@prisma/engines@7.10.0": true,
+    "@swc/core@1.16.2": true,
+    "argon2@0.45.1": true,
+    "prisma@7.10.0": true
   }
 }
